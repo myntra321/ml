@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Item {
+    int value;
+    int weight;
+    double valuePerWeight; // Value-to-weight ratio
+};
+
+// Function to compare items based on value-to-weight ratio
+bool compare(Item a, Item b) {
+    return a.valuePerWeight > b.valuePerWeight;
+}
+
+double fractionalKnapsack(int capacity, vector<Item>& items) {
+    sort(items.begin(), items.end(), compare);
+
+    double totalValue = 0.0;
+
+    for (auto& item : items) {
+        if (capacity >= item.weight) {
+            totalValue += item.value;
+            capacity -= item.weight;
+        } else {
+            totalValue += (double)capacity / item.weight * item.value;
+            break;
+        }
+    }
+
+    return totalValue;
+}
+
+int main() {
+    int numItems;
+    cout << "Enter the number of items: ";
+    cin >> numItems;
+
+    vector<Item> items(numItems);
+
+    cout << "Enter the value and weight for each item:\n";
+    for (int i = 0; i < numItems; ++i) {
+        cout << "Item " << i + 1 << " value: ";
+        cin >> items[i].value;
+        cout << "Item " << i + 1 << " weight: ";
+        cin >> items[i].weight;
+        items[i].valuePerWeight = (double)items[i].value / items[i].weight;
+    }
+
+    int knapsackCapacity;
+    cout << "Enter the knapsack capacity: ";
+    cin >> knapsackCapacity;
+
+    double maxValue = fractionalKnapsack(knapsackCapacity, items);
+
+    cout << "Maximum value in the knapsack: " << maxValue << endl;
+
+    return 0;
+}
